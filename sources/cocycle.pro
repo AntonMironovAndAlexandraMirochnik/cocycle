@@ -4,4 +4,5 @@ CONFIG += ordered
 
 SUBDIRS += \
     sources/notify \
-    sources/test
+    sources/test \
+    sources/extended_cache
