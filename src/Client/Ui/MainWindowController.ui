@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindowController</class>
+ <widget class="QMainWindow" name="MainWindowController">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget"/>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuCocycle">
+    <property name="title">
+     <string>Cocycle</string>
+    </property>
+    <addaction name="action_Quit"/>
+   </widget>
+   <addaction name="menuCocycle"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="action_Quit">
+   <property name="text">
+    <string>&amp;Quit</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

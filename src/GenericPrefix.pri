@@ -1,0 +1,2 @@
+
+DEFINES += "nullptr=0"
