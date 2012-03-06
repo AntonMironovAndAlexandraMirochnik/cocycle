@@ -6,22 +6,26 @@ VariantSerializer::VariantSerializer(const QVariant &variant) {
     _isValid = false;
 }
 
+VariantSerializer::VariantSerializer(const VariantSerializer &other) {
+    _variant = other._variant;
+    _isValid = other._isValid;
+    _data = other._data;
+}
+
 QVariant VariantSerializer::variant() const { return _variant;}
 QByteArray VariantSerializer::data() const {return _data; }
 bool VariantSerializer::isValid() const {return _isValid; }
 
-QByteArray VariantSerializer::serialize(const QVariant &variant, bool &isOK) {
+void VariantSerializer::serialize() {
     DomDocument doc;
-    isOK = true;
-    QDomElement domElement = doc.domValue(variant, isOK);
+    _isValid = true;
+    QDomElement domElement = doc.domValue(_variant, _isValid);
     doc.appendChild(domElement);
-    QByteArray data = doc.toByteArray();
-    return data;
+    _data = doc.toByteArray();
 }
 
-QByteArray VariantSerializer::operator()() {
-    bool isOK = true;
-    _data = serialize(variant(), isOK);
-    _isValid = isOK;
-    return data();
+VSerializer VariantSerializer::Serialize(const QVariant &variant) {
+    VSerializer serializer = new VariantSerializer(variant);
+    serializer->serialize();
+    return serializer;
 }

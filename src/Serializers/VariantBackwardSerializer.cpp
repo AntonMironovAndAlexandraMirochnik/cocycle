@@ -6,25 +6,28 @@ VariantBackwardSerializer::VariantBackwardSerializer(const QByteArray &data) {
     _isValid = false;
 }
 
+VariantBackwardSerializer::VariantBackwardSerializer(const VariantBackwardSerializer &other) {
+    _variant = other._variant;
+    _isValid = other._isValid;
+    _data = other._data;
+}
+
 QVariant VariantBackwardSerializer::variant() const { return _variant;}
 QByteArray VariantBackwardSerializer::data() const {return _data; }
 bool VariantBackwardSerializer::isValid() const {return _isValid; }
 
-QVariant VariantBackwardSerializer::deserialize(const QByteArray &data, bool &isOK) {
+void VariantBackwardSerializer::deserialize() {
     DomDocument doc;
-    doc.setContent(data);
-    QVariant variant;
-    isOK = doc.hasChildNodes();
-    if (isOK) {
+    doc.setContent(_data);
+    _isValid = doc.hasChildNodes();
+    if (_isValid) {
         QDomElement domElement = doc.firstChildElement();
-        variant = doc.variantValue(domElement, isOK);
+        _variant = doc.variantValue(domElement, _isValid);
     }
-    return variant;
 }
 
-QVariant VariantBackwardSerializer::operator()() {
-    bool isOK = true;
-    _variant = deserialize(data(), isOK);
-    _isValid = isOK;
-    return variant();
+VBackwardSerializer VariantBackwardSerializer::Deserialize(const QByteArray &data) {
+    VBackwardSerializer deserializer = new VariantBackwardSerializer(data);
+    deserializer->deserialize();
+    return deserializer;
 }

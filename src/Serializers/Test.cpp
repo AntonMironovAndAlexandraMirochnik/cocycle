@@ -5,14 +5,16 @@
 
 int main() {
     QVariantList list;
-    list << "Hello World" << 0.123 << 123 << QDate::currentDate() << QTime::currentTime() << QDateTime::currentDateTime();
+    list << "Hello World" << false << 0.123 << 123 << QDate::currentDate() << QTime::currentTime() << QDateTime::currentDateTime();
     QVariantMap map;
-    map["string"] = list[0];
-    map["float"] = list[1];
-    map["int"] = list[2];
-    map["date"] = list[3];
-    map["time"] = list[4];
-    map["date_time"] = list[5];
+    int i = 0;
+    map["string"] = list[i++];
+    map["bool"] = list[i++];
+    map["float"] = list[i++];
+    map["int"] = list[i++];
+    map["date"] = list[i++];
+    map["time"] = list[i++];
+    map["date_time"] = list[i++];
     map["list"] = list;
 
     QByteArray data1;
@@ -20,15 +22,15 @@ int main() {
     QVariant variantResult;
     bool isOK = true;
     if (isOK) {
-        VariantSerializer serializer(map);
-        data1 = serializer();
-        isOK = serializer.isValid();
+        VariantSerializer* serializer = VariantSerializer::Serialize(map);
+        data1 = serializer->data();
+        isOK = serializer->isValid();
         qDebug() << data1;
     }
     if (isOK) {
-        VariantBackwardSerializer deserializer(data1);
-        variantResult = deserializer();
-        isOK = deserializer.isValid();
+        VariantBackwardSerializer* deserializer = VariantBackwardSerializer::Deserialize(data1);
+        variantResult = deserializer->variant();
+        isOK = deserializer->isValid();
         qDebug() << variantResult;
     }
     if (isOK) {

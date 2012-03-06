@@ -3,18 +3,22 @@
 
 #include <QtCore>
 
+class VariantSerializer;
+
+typedef VariantSerializer* VSerializer;
+
 class VariantSerializer
 {
 public:
     VariantSerializer(const QVariant &variant);
+    VariantSerializer(const VariantSerializer &other);
     QVariant variant() const;
     QByteArray data() const;
     bool isValid() const;
 
-    QByteArray operator()();
+    virtual void serialize();
 
-protected:
-    virtual QByteArray serialize(const QVariant &variant, bool &isOK);
+    static VSerializer Serialize(const QVariant &variant);
 
 private:
     QVariant _variant;

@@ -11,7 +11,8 @@ CONFIG += create_prl
 HEADERS += \
     DomDocument.h \
     VariantSerializer.h \
-    VariantBackwardSerializer.h
+    VariantBackwardSerializer.h \
+    Serializers.h
 
 SOURCES += \
     DomDocument.cpp \
