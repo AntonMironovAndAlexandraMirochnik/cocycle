@@ -26,6 +26,18 @@ NConnectionClient NetworkClient::connectionClient() const { return _connectionCl
 
 bool NetworkClient::isVerified() const { return _isVerified; }
 bool NetworkClient::isOnServerSide() const { return 0 != id; }
+bool NetworkClient::isAlive() const {
+    return (nullptr != connectionClient() && connectionClient()->state() == QAbstractSocket::ConnectedState);
+}
+bool NetworkClient::isNotConnected() const {
+    return (nullptr == connectionClient() || connectionClient()->state() == QAbstractSocket::UnconnectedState);
+}
+bool NetworkClient::isConnecting() const {
+    return (nullptr != connectionClient() && (connectionClient()->state() == QAbstractSocket::ConnectingState || connectionClient()->state() == QAbstractSocket::HostLookupState));
+}
+bool NetworkClient::isDisconnecting() const {
+    return (nullptr != connectionClient() && connectionClient()->state() == QAbstractSocket::ClosingState);
+}
 
 QHostAddress NetworkClient::peerAddress() const { return _peerAddress; }
 quint16 NetworkClient::peerPort() const { return _peerPort; }

@@ -14,6 +14,10 @@ public:
     explicit NetworkClient(QObject* parent = 0, int id_ = 0);
     bool isVerified() const;
     bool isOnServerSide() const;
+    bool isAlive() const;
+    bool isNotConnected() const;
+    bool isConnecting() const;
+    bool isDisconnecting() const;
     QHostAddress peerAddress() const;
     quint16 peerPort() const;
     QString peerName() const;
