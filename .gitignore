@@ -6,6 +6,7 @@
 *.o
 *.so
 *.lib
+*.bak
 Makefile
 Makefile.Debug
 Makefile.Release
