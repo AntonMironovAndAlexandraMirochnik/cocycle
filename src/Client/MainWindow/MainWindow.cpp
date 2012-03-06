@@ -19,6 +19,8 @@ void MainWindow::onQuitAction() {
 }
 
 void MainWindow::closeEvent(QCloseEvent *event) {
-    event->accept();
-    emit closed();
+    if (isVisible()) {
+        event->accept();
+        emit closed();
+    }
 }

@@ -17,6 +17,14 @@ public:
     bool isInProgress();
     void launchDialog();
 
+public slots:
+    void accept();
+    void reject();
+
+signals:
+    void accepted();
+    void rejected();
+
 protected:
     NetworkClient* networkClient() const;
     LoginWidget* loginWidget() const;
@@ -29,11 +37,15 @@ protected slots:
     void onAcceptAttempt();
     void onRejectAttempt();
 
+    void onWindowClosed();
+
     void startClient();
 private:
     QPointer<NetworkClient> _networkClient;
     QPointer<LoginWidget> _loginWidget;
     bool _isInProgress;
+
+
 };
 
 #endif // LOGINDIALOGCONTROLLER_H

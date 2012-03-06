@@ -17,6 +17,8 @@ public:
     bool isAttempingToReject() const;
     QString address() const;
     quint16 port() const;
+    QString login() const;
+    QByteArray password() const;
 
 public slots:
     void attemptToAccept();
@@ -28,17 +30,18 @@ public slots:
 signals:
     void acceptAttempt();
     void rejectAttempt();
+    void closed();
     
 protected:
     virtual void closeEvent(QCloseEvent *event);
     bool canClose() const;
     QString status() const;
+    bool isEnteredDataValid() const;
 
     void setStatus(const QString &status);
 
 private:
     Ui::LoginWidget *ui;
-    bool _canClose;
     bool _isAttempingToAccept;
     bool _isAttempingToReject;
     QString _status;

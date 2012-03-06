@@ -42,6 +42,7 @@ LoginDialogController* MainController::loginDialogController() const { return _l
 
 void MainController::initLoginDialogController() {
     _loginDialogController = new LoginDialogController(this);
+    connect(loginDialogController(), SIGNAL(rejected()), this, SLOT(stop()));
 }
 
 void MainController::start() {

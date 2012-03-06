@@ -7,6 +7,7 @@ LoginDialogController::LoginDialogController(QObject *parent) : QObject(parent) 
     _loginWidget = new LoginWidget();
     connect(loginWidget(), SIGNAL(acceptAttempt()), this, SLOT(onAcceptAttempt()));
     connect(loginWidget(), SIGNAL(rejectAttempt()), this, SLOT(onRejectAttempt()));
+    connect(loginWidget(), SIGNAL(closed()), this, SLOT(onWindowClosed()));
 }
 
 LoginDialogController::~LoginDialogController() {
@@ -47,10 +48,7 @@ void LoginDialogController::startClient() {
 }
 
 void LoginDialogController::onClientStarted() {
-    if (loginWidget()->isAttempingToAccept())
-    {
-        loginWidget()->responseToAcceptAttempt();
-    }
+    accept();
 }
 
 void LoginDialogController::onClientStopped() {
@@ -59,8 +57,7 @@ void LoginDialogController::onClientStopped() {
 
 void LoginDialogController::onClientError(int error) {
     QString errorString = tr("Connectio error %1").arg(error);
-    if (loginWidget()->isAttempingToAccept())
-    {
+    if (loginWidget()->isAttempingToAccept()) {
         loginWidget()->responseToAcceptAttempt(errorString);
     } else if (loginWidget()->isAttempingToReject()) {
         loginWidget()->responseToRejectAttempt(errorString);
@@ -80,10 +77,32 @@ void LoginDialogController::onAcceptAttempt() {
 }
 
 void LoginDialogController::onRejectAttempt() {
-    loginWidget()->responseToRejectAttempt();
+    reject();
+}
+
+void LoginDialogController::onWindowClosed() {
+    if (networkClient()->isAlive()) {
+        emit accepted();
+    } else {
+        emit rejected();
+    }
 }
 
 void LoginDialogController::launchDialog() {
     loginWidget()->setWindowModality(Qt::ApplicationModal);
     loginWidget()->show();
+}
+
+void LoginDialogController::accept() {
+    if (loginWidget()->isAttempingToAccept()) {
+        loginWidget()->responseToAcceptAttempt();
+    }
+    loginWidget()->close();
+}
+
+void LoginDialogController::reject() {
+    if (loginWidget()->isAttempingToReject()) {
+        loginWidget()->responseToRejectAttempt();
+    }
+    loginWidget()->close();
 }

@@ -6,19 +6,22 @@ LoginWidget::LoginWidget(QWidget *parent) : QWidget(parent), ui(new Ui::LoginWid
     ui->setupUi(this);
     setWindowFlags(Qt::Dialog);
     connect(ui->connectButton, SIGNAL(pressed()), this, SLOT(attemptToAccept()));
+    connect(ui->addressEdit, SIGNAL(textChanged(QString)), this, SLOT(validateControls()));
+    connect(ui->loginEdit, SIGNAL(textChanged(QString)), this, SLOT(validateControls()));
+    connect(ui->passwordEdit, SIGNAL(textChanged(QString)), this, SLOT(validateControls()));
     connect(this, SIGNAL(acceptAttempt()), this, SLOT(validateControls()));
     connect(this, SIGNAL(rejectAttempt()), this, SLOT(validateControls()));
     setStatus("");
-    _canClose = false;
     _isAttempingToAccept = false;
     _isAttempingToReject = false;
+    validateControls();
 }
 
 LoginWidget::~LoginWidget() {
     delete ui;
 }
 
-bool LoginWidget::canClose() const { return _canClose && !isAttempingToAccept() && !isAttempingToReject(); }
+bool LoginWidget::canClose() const { return !isAttempingToAccept() && !isAttempingToReject(); }
 bool LoginWidget::isAttempingToAccept() const { return _isAttempingToAccept; }
 bool LoginWidget::isAttempingToReject() const { return _isAttempingToReject; }
 QString LoginWidget::status() const { return _status; }
@@ -28,6 +31,17 @@ QString LoginWidget::address() const {
 quint16 LoginWidget::port() const {
     return ui->portEdit->value();
 }
+QString LoginWidget::login() const {
+    return ui->loginEdit->text();
+}
+QByteArray LoginWidget::password() const {
+    QString password = ui->passwordEdit->text();
+    return (password.isEmpty()) ? password.toUtf8() : QCryptographicHash::hash(password.toUtf8(), QCryptographicHash::Sha1);
+}
+
+bool LoginWidget::isEnteredDataValid() const {
+    return !(address().isEmpty() || login().isEmpty() || password().isEmpty());
+}
 
 void LoginWidget::setStatus(const QString &status) {
     _status = status;
@@ -35,16 +49,20 @@ void LoginWidget::setStatus(const QString &status) {
 }
 
 void LoginWidget::closeEvent(QCloseEvent *event) {
-    if (canClose()) {
-        event->accept();
-    } else {
-        event->ignore();
-        attemptToReject();
+    if (isVisible())
+    {
+        if (canClose()) {
+            event->accept();
+            emit closed();
+        } else {
+            event->ignore();
+            QMetaObject::invokeMethod(this, "attemptToReject", Qt::QueuedConnection);
+        }
     }
 }
 
 void LoginWidget::validateControls() {
-    ui->connectButton->setEnabled(!isAttempingToAccept());
+    ui->connectButton->setEnabled(isEnteredDataValid());
     setEnabled(!isAttempingToAccept() && !isAttempingToReject());
 }
 
@@ -70,7 +88,6 @@ void LoginWidget::attemptToReject() {
 void LoginWidget::responseToAcceptAttempt(const QString &errorString) {
     _isAttempingToAccept = false;
     if (errorString.isEmpty()) {
-        _canClose = true;
         close();
     } else {
         validateControls();
@@ -81,7 +98,6 @@ void LoginWidget::responseToAcceptAttempt(const QString &errorString) {
 void LoginWidget::responseToRejectAttempt(const QString &errorString) {
     _isAttempingToReject = false;
     if (errorString.isEmpty()) {
-        _canClose = true;
         close();
     } else {
         validateControls();
