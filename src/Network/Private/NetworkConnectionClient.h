@@ -18,6 +18,7 @@ public slots:
     virtual void start(const QHostAddress &address = QHostAddress::Any, quint16 port = 0);
     virtual void stop();
     virtual void write(const QByteArray &data);
+    virtual void pickInfo();
 
 signals:
     void infoPicked(const NetworkConnectionClient::Info &info);

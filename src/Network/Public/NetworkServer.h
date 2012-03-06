@@ -19,7 +19,9 @@ protected:
     NConnectionServer connectionServer() const;
 
 protected slots:
-    void onClientConnected(NConnectionClient connectionClient);
+    virtual void onConnectionClientConnected(NConnectionClient connectionClient);
+    virtual void onClientConnected(NClient client);
+    virtual void onClientInfoPicked();
 
 private:
     NConnectionServer _connectionServer;

@@ -3,6 +3,7 @@ include(../GenericPrefix.pri)
 QT -= gui
 QT += network
 
+LIBRARIES +=../Serializers
 LIBRARIES +=../Log
 
 TARGET = Network

@@ -23,16 +23,23 @@ public slots:
     void setConnectionClient(NConnectionClient connectionClient);
     void startClient(const QHostAddress &address = QHostAddress::Any, quint16 port = 0);
     void stopClient();
-    void sendData(const QByteArray &data);
-
-    void onConnectionClientConnected();
-    void onConnectionClientDisconnected();
-    void onError(QAbstractSocket::SocketError socketError);
-    void onReadyRead();
-    void onConnectionClientInfoPicked(const NetworkConnectionClient::Info &info);
+    void sendVariantObject(const QVariant &variant);
+    void pickInfo();
 
 protected:
     NConnectionClient connectionClient() const;
+
+protected slots:
+    void sendData(const QByteArray &data);
+
+    void onReadyRead();
+    void onConnectionClientConnected();
+    void onConnectionClientDisconnected();
+    void onIncomingDataProcessingFinished();
+    void onOutcomingDataProcessingFinished();
+    void onError(QAbstractSocket::SocketError socketError);
+    void onConnectionClientInfoPicked(const NetworkConnectionClient::Info &info);
+    void onIncomingData(const QByteArray &data);
 
 private:
     NConnectionClient _connectionClient;
@@ -47,7 +54,9 @@ signals:
     void stopped();
     void error(int error);
     void incomingData(const QByteArray &data);
+    void incomingVariantObject(const QVariant &variant);
     void verified(bool isSuccess);
+    void connectionClientInfoPicked();
 
     friend class NetworkServer;
 };

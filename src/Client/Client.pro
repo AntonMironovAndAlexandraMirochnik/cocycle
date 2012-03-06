@@ -1,6 +1,7 @@
 include(../GenericPrefix.pri)
 
 LIBRARIES +=../Network
+LIBRARIES +=../Serializers
 LIBRARIES +=../Log
 
 QT += network

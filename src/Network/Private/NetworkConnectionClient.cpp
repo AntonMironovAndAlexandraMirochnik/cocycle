@@ -17,6 +17,9 @@ void NetworkConnectionClient::write(const QByteArray &data) {
 }
 
 void NetworkConnectionClient::onConnected() {
+}
+
+void NetworkConnectionClient::pickInfo() {
     NetworkConnectionClient::Info info;
     info.peerAddress = peerAddress();
     info.peerPort = peerPort();

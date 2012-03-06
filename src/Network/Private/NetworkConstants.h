@@ -18,4 +18,6 @@ typedef QPointer<NetworkServer> NServer;
 typedef QPointer<NetworkConnectionClient> NConnectionClient;
 typedef QPointer<NetworkConnectionServer> NConnectionServer;
 
+const int MaxUnthreadedProcessingDataSize = 512;
+
 #endif // NETWORKCONSTANTS_H
