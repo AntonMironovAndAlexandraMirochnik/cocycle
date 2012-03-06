@@ -22,9 +22,12 @@ public slots:
     void stop();
 
 protected:
+    //init components
     NetworkClient* networkClient() const;
+    void initNetworkClient();
+
     NetworkThread* networkThread() const;
-    void initNetworkThread() const;
+    void initNetworkThread();
 
     MainWindowController* mainWindowController() const;
     void initMainWindowController();
@@ -33,11 +36,8 @@ protected:
     void initLoginDialogController();
 
 protected slots:
-    void loginDialogAccepted();
-    void loginDialogRejected();
-
-protected slots:
-    void networkThreadInitialized();
+    void onNetworkThreadInitialized();
+    void onNetworkClientStarted();
 
 private:
     QPointer<NetworkThread> _networkThread;

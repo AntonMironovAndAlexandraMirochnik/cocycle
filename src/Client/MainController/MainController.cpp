@@ -1,60 +1,62 @@
 #include "MainController.h"
 #include "Network.h"
-#include "Ui/MainWindowController.h"
-#include "Ui/LoginDialogController.h"
+#include "MainWindow/MainWindowController.h"
+#include "Login/LoginDialogController.h"
 
 MainController::MainController(QObject *parent) :  QObject(parent) {
-    _networkThread = new NetworkThread(this);
-
-    connect(networkThread(), SIGNAL(initialized()), this, SLOT(networkThreadInitialized()));
-    connect(networkThread(), SIGNAL(finished()), this, SLOT(deleteLater()));
-
+    initNetworkThread();
+    initMainWindowController();
+    initLoginDialogController();
 }
 
 MainController::~MainController() {
-    QApplication::instance()->quit();
+    QCoreApplication::instance()->quit();
+}
+
+NetworkClient* MainController::networkClient() const { return _networkClient.data(); }
+
+void MainController::initNetworkClient() {
+    _networkClient = networkThread()->createClient(this);
+    connect(networkClient(), SIGNAL(started()), this, SLOT(onNetworkClientStarted()));
+
+    loginDialogController()->setNetworkClient(networkClient());
 }
 
 NetworkThread* MainController::networkThread() const { return _networkThread.data(); }
 
-NetworkClient* MainController::networkClient() const { return _networkClient.data(); }
+void MainController::initNetworkThread() {
+    _networkThread = new NetworkThread(this);
+
+    connect(networkThread(), SIGNAL(initialized()), this, SLOT(onNetworkThreadInitialized()));
+    connect(networkThread(), SIGNAL(finished()), this, SLOT(deleteLater()));
+}
 
 MainWindowController* MainController::mainWindowController() const { return _mainWindowController.data(); }
-
-LoginDialogController* MainController::loginDialogController() const { return _loginDialogController.data(); }
 
 void MainController::initMainWindowController() {
     _mainWindowController = new MainWindowController(this);
     connect(mainWindowController(), SIGNAL(shouldQuit()), this, SLOT(stop()));
 }
 
+LoginDialogController* MainController::loginDialogController() const { return _loginDialogController.data(); }
+
 void MainController::initLoginDialogController() {
-    _loginDialogController = new LoginDialogController(networkClient(), this);
-    connect(loginDialogController(), SIGNAL(accepted()), this, SLOT(loginDialogAccepted()));
-    connect(loginDialogController(), SIGNAL(rejected()), this, SLOT(loginDialogRejected()));
+    _loginDialogController = new LoginDialogController(this);
 }
 
 void MainController::start() {
     networkThread()->start(QThread::LowestPriority);
-//    mainWindowController()->showWindow();
 }
 
 void MainController::stop() {
+    delete loginDialogController();
     networkThread()->quit();
 }
 
-void MainController::networkThreadInitialized() {
-    _networkClient = networkThread()->createClient(this);
-
-    initLoginDialogController();
-    loginDialogController()->open();
+void MainController::onNetworkThreadInitialized() {
+    initNetworkClient();
 }
 
-void MainController::loginDialogAccepted() {
-    initMainWindowController();
-    mainWindowController()->window()->show();
-}
-
-void MainController::loginDialogRejected() {
-    stop();
+void MainController::onNetworkClientStarted() {
+    mainWindowController()->showWindow();
 }
