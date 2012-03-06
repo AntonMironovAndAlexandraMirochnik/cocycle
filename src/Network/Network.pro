@@ -10,8 +10,6 @@ TEMPLATE = lib
 CONFIG += staticlib
 CONFIG += create_prl
 
-include(../GenericPostfix.pri)
-
 HEADERS += \
     Private/NetworkConstants.h \
     Private/NetworkConnectionClient.h \
@@ -29,3 +27,5 @@ SOURCES += \
     Public/NetworkServer.cpp \
     Public/NetworkClient.cpp \
     Public/NetworkThread.cpp
+
+include(../GenericPostfix.pri)

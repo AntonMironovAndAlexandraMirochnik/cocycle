@@ -4,6 +4,7 @@ LIBRARIES +=../Network
 LIBRARIES +=../Log
 
 QT += network
+QT += xml
 
 TARGET = CocycleServer
 TEMPLATE = app
@@ -23,4 +24,3 @@ FORMS += \
     Ui/MainWindow.ui
 
 include(../GenericPostfix.pri)
-

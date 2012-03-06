@@ -2,6 +2,7 @@ TEMPLATE = subdirs
 
 SUBDIRS += \
     Log \
+    Serializers \
     Network \
     Server
 	

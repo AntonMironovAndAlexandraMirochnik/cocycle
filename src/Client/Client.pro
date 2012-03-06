@@ -4,6 +4,7 @@ LIBRARIES +=../Network
 LIBRARIES +=../Log
 
 QT += network
+QT += xml
 
 TARGET = CocycleClient
 TEMPLATE = app
