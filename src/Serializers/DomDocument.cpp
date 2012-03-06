@@ -23,6 +23,38 @@ QString DomDocument::stringValue(const QDomNode &node, bool &isOK) {
     return result;
 }
 
+//bool
+const QString BoolTrueValue0 = "true";
+const QString BoolTrueValue1 = "yes";
+const QString BoolTrueValue2 = "1";
+const QString BoolFalseValue0 = "false";
+const QString BoolFalseValue1 = "no";
+const QString BoolFalseValue2 = "0";
+
+QDomNode DomDocument::domValue(bool value, bool &isOK) {
+    isOK = true;
+    return createTextNode(value ? BoolTrueValue0 : BoolFalseValue0);
+}
+bool DomDocument::boolValue(const QDomNode &node, bool &isOK) {
+    bool result = false;
+    if (!isOK) {
+    } else if (node.isText()) {
+        QString resultString = node.toText().data();
+        if (BoolTrueValue0 == resultString || BoolTrueValue1 == resultString || BoolTrueValue2 == resultString) {
+            isOK = true;
+            result = true;
+        } else if (BoolFalseValue0 == resultString || BoolFalseValue1 == resultString || BoolFalseValue2 == resultString) {
+            isOK = true;
+            result = false;
+        } else {
+            isOK = false;
+        }
+    } else {
+        isOK = false;
+    }
+    return result;
+}
+
 //int
 QDomNode DomDocument::domValue(int value, bool &isOK) {
     isOK = true;
@@ -108,6 +140,7 @@ QDateTime DomDocument::dateTimeValue(const QDomNode &node, bool &isOK) {
 
 const QString KeyAttribute = "key";
 const QString StringTag = "string";
+const QString BoolTag = "bool";
 const QString IntTag = "int";
 const QString DoubleTag = "float";
 const QString DateTag = "date";
@@ -146,6 +179,10 @@ QDomElement DomDocument::domSimpleValue(const QVariant &value, bool &isOK, const
     case QVariant::String:
         node = domValue(value.toString(), isOK);
         tag = StringTag;
+        break;
+    case QVariant::Bool:
+        node = domValue(value.toBool(), isOK);
+        tag = BoolTag;
         break;
     case QVariant::Int:
         node = domValue(value.toInt(), isOK);
@@ -196,6 +233,8 @@ QVariant DomDocument::variantValue(const QDomElement &element, bool &isOK, QStri
     } else if (element.hasChildNodes()) {
         if (StringTag == tag) {
             result = stringValue(element.firstChild(), isOK);
+        } else if (BoolTag == tag) {
+            result = boolValue(element.firstChild(), isOK);
         } else if (IntTag == tag) {
             result = intValue(element.firstChild(), isOK);
         } else if (DoubleTag == tag) {

@@ -18,6 +18,9 @@ protected:
     virtual QDomNode domValue(const QString &value, bool &isOK);
     virtual QString stringValue(const QDomNode &node, bool &isOK);
 
+    virtual QDomNode domValue(bool value, bool &isOK);
+    virtual bool boolValue(const QDomNode &node, bool &isOK);
+
     virtual QDomNode domValue(int value, bool &isOK);
     virtual int intValue(const QDomNode &node, bool &isOK);
 
