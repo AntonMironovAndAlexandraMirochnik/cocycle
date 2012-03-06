@@ -5,10 +5,11 @@
 
 int main() {
     QVariantList list;
-    list << "Hello World" << false << 0.123 << 123 << QDate::currentDate() << QTime::currentTime() << QDateTime::currentDateTime();
+    list << "Hello World" << QString("Here will be data.").toUtf8() << false << 0.123 << 123 << QDate::currentDate() << QTime::currentTime() << QDateTime::currentDateTime();
     QVariantMap map;
     int i = 0;
     map["string"] = list[i++];
+    map["data"] = list[i++];
     map["bool"] = list[i++];
     map["float"] = list[i++];
     map["int"] = list[i++];

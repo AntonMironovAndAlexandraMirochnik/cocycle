@@ -23,6 +23,23 @@ QString DomDocument::stringValue(const QDomNode &node, bool &isOK) {
     return result;
 }
 
+//data
+QDomNode DomDocument::domValue(const QByteArray &value, bool &isOK) {
+    isOK = true;
+    return createCDATASection(QString(value));
+}
+QByteArray DomDocument::dataValue(const QDomNode &node, bool &isOK) {
+    QByteArray result;
+    if (!isOK) {
+    } else if (node.isCDATASection()) {
+        result = node.toCDATASection().data().toUtf8();
+        isOK = true;
+    } else {
+        isOK = false;
+    }
+    return result;
+}
+
 //bool
 const QString BoolTrueValue0 = "true";
 const QString BoolTrueValue1 = "yes";
@@ -140,6 +157,7 @@ QDateTime DomDocument::dateTimeValue(const QDomNode &node, bool &isOK) {
 
 const QString KeyAttribute = "key";
 const QString StringTag = "string";
+const QString DataTag = "data";
 const QString BoolTag = "bool";
 const QString IntTag = "int";
 const QString DoubleTag = "float";
@@ -179,6 +197,10 @@ QDomElement DomDocument::domSimpleValue(const QVariant &value, bool &isOK, const
     case QVariant::String:
         node = domValue(value.toString(), isOK);
         tag = StringTag;
+        break;
+    case QVariant::ByteArray:
+        node = domValue(value.toByteArray(), isOK);
+        tag = DataTag;
         break;
     case QVariant::Bool:
         node = domValue(value.toBool(), isOK);
@@ -233,6 +255,8 @@ QVariant DomDocument::variantValue(const QDomElement &element, bool &isOK, QStri
     } else if (element.hasChildNodes()) {
         if (StringTag == tag) {
             result = stringValue(element.firstChild(), isOK);
+        } else if (DataTag == tag) {
+            result = dataValue(element.firstChild(), isOK);
         } else if (BoolTag == tag) {
             result = boolValue(element.firstChild(), isOK);
         } else if (IntTag == tag) {
